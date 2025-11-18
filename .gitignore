@@ -1,2 +1,21 @@
-/.env
-/venv
+# Fichiers générés par Python
+#############################
+
+# Dossiers et fichiers de compilation (non nécessaires)
+__pycache__/
+*.pyc
+*~$
+*.bak
+
+# Environnements virtuels
+# Le nom 'venv' est le plus courant, mais incluez aussi 'env'
+venv/
+env/
+
+# Fichiers de la librairie Discord
+# (Souvent dans les environnements virtuels, mais ajoutés par sécurité)
+# Les logs Discord peuvent être ignorés
+*.log
+
+# Variables d'environnement (TRÈS IMPORTANT pour la sécurité)
+.env

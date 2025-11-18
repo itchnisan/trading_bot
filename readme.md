@@ -4,4 +4,4 @@ pip install requirement.txt
 
 
 si tu rajoute des biblio 
-pip freeze ->  requirement.txt
+pip freeze ->  requirements.txt
