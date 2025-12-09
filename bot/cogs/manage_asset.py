@@ -1,31 +1,32 @@
-from discord.ext import commands
-from bot.services.interface_service import UnifiedSearch
+from discord import app_commands, Interaction
 import discord
+from discord.ext import commands
+from bot.services.interface_service import SelectCountModal
+from database.db import ensure_user
 
 class ManageAssetCog(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot 
+        self.bot = bot
 
-    # ----------------------------------------------------
-    # Commande selection des assets 
-    # ----------------------------------------------------
-    @commands.command(name="select", help="Sélectionne un actif.")
-    async def select_command(self, ctx):
-        embed = discord.Embed(
-            title="🔎 Recherche d’actifs",
-            description="Clique sur le bouton ci-dessous pour commencer.",
-            color=0x2ECC71
-        )
+    @app_commands.command(
+        name="start",
+        description="Commencer la sélection d'actifs"
+    )
+    async def start(self, interaction: Interaction):
+        # S'assurer que l'utilisateur est dans la base
+        await ensure_user(self.bot.pool, interaction.user.id, interaction.user.name)
 
-        await ctx.send(
-            embed=embed,
-            view=UnifiedSearch()
-        )
-    
-    # ----------------------------------------------------
-    # Commande récap des assets sélectionnés
-    # ----------------------------------------------------
-    #todo ajouter une commande pour récap des assets sélectionnés en dm
+        # Lancer le modal
+        modal = SelectCountModal(interaction, self.bot.pool)
+        await interaction.response.send_modal(modal)
 
+
+GUILD_ID = 1440323642796937328 
 async def setup(bot):
-    await bot.add_cog(ManageAssetCog(bot))
+    cog = ManageAssetCog(bot)
+    await bot.add_cog(cog)
+    
+    # Ajouter explicitement la commande au tree
+    bot.tree.add_command(cog.start, guild=discord.Object(id=GUILD_ID))
+    print("[DEBUG] Slash commands dans ce cog :", [c.name for c in bot.tree.get_commands()])
+
